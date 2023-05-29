@@ -1,0 +1,12 @@
+# Ignore compiled Python files
+*.pyc
+
+# Ignore virtual environment
+venv/
+
+# Ignore log files
+*.log
+
+# Ignore build artifacts
+build/
+dist/
