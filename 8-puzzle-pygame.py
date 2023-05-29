@@ -33,8 +33,10 @@ class Puzzle:
         return self.state == [[1, 2, 3], [4, 5, 6], [7, 8, None]]
 
     def actions(self):
+        # Find the position of the empty cell
         row, col = self.find(None)
         actions = []
+        # Check available actions based on the empty cell's position
         if row > 0:
             actions.append('up')
         if row < 2:
@@ -46,7 +48,9 @@ class Puzzle:
         return actions
 
     def result(self, action):
+        # Find the position of the empty cell
         row, col = self.find(None)
+        # Calculate the new position based on the action
         if action == 'up':
             new_row = row - 1
             new_col = col
@@ -61,23 +65,28 @@ class Puzzle:
             new_col = col + 1
         else:
             raise ValueError("Invalid action")
+        # Create a new state by swapping the empty cell with the adjacent cell
         new_state = [row[:] for row in self.state]
         new_state[row][col], new_state[new_row][new_col] = new_state[new_row][new_col], new_state[row][col]
         return Puzzle(new_state)
 
     def find(self, value):
+        # Find the position of a given value in the puzzle board
         for i in range(3):
             for j in range(3):
                 if self.state[i][j] == value:
                     return i, j
 
     def manhattan(self):
+        # Calculate the sum of Manhattan distances for each tile
         distance = 0
         for i in range(3):
             for j in range(3):
                 value = self.state[i][j]
                 if value is not None:
+                    # Calculate the expected position (goal position) for each tile
                     row_goal, col_goal = (value - 1) // 3, (value - 1) % 3
+                    # Calculate the Manhattan distance for the tile and add it to the total distance
                     distance += abs(row_goal - i) + abs(col_goal - j)
         return distance
 
@@ -91,9 +100,11 @@ class Node:
         self.h = h
 
     def f(self):
+        # Calculate the total cost of the node (g + h)
         return self.g + self.h
 
     def __lt__(self, other):
+        # Compare nodes based on their total cost (f value)
         return self.f() < other.f()
 
 # Define the solver class
@@ -102,12 +113,14 @@ class Solver:
         self.puzzle = puzzle
 
     def solve(self):
+        # Create the initial node with the puzzle state and heuristic value
         start_node = Node(self.puzzle, g=0, h=self.puzzle.manhattan())
-        heap = [start_node]
-        visited = set()
+        heap = [start_node]  # Use a priority queue (heap) to store nodes
+        visited = set()  # Keep track of visited puzzle states to avoid duplicates
         while heap:
-            node = heapq.heappop(heap)
-            if node.puzzle.is_goal():
+            node = heapq.heappop(heap)  # Pop the node with the lowest total cost
+            if node.puzzle.is_goal():  # Check if the puzzle state is the goal state
+                # If it is, reconstruct and return the solution path
                 path = []
                 while node.parent is not None:
                     path.append(node)
@@ -119,6 +132,7 @@ class Solver:
             for action in node.puzzle.actions():
                 child = node.puzzle.result(action)
                 if str(child) not in visited:
+                    # Create a child node and add it to the priority queue
                     child_node = Node(child, parent=node, action=action, g=node.g + 1, h=child.manhattan())
                     heapq.heappush(heap, child_node)
         return []
@@ -139,7 +153,7 @@ def main():
 
     # Solve the puzzle and visualize the solution path
     solution = solver.solve()
-    if not solution:               
+    if not solution:
         print("No solution found")
         return
     for node in solution:
