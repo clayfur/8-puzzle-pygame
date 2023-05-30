@@ -3,14 +3,14 @@ import heapq
 import time
 
 # Define the size of the window
-WINDOW_SIZE = (300, 300)
+WINDOW_SIZE = (900, 900)
 
 # Define the colors and font
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GRAY = (128, 128, 128)
 pygame.init()
-FONT = pygame.font.SysFont(None, 30)
+FONT = pygame.font.SysFont(None, 120)
 
 # Define the delay between each step (in seconds)
 DELAY = 0.5
@@ -145,7 +145,7 @@ def main():
     pygame.display.set_caption("8 Puzzle")
 
     # Define the initial state of the puzzle
-    initial_state = [[7, 4, 8], [5, 3, 2], [None, 1, 6]]
+    initial_state = [[8, 5, 6], [2, 4, 1], [3, 7, None]]
 
     # Create the puzzle and solver instances
     puzzle = Puzzle(initial_state)
@@ -167,7 +167,7 @@ def main():
         window.fill(WHITE)
         for i in range(3):
             for j in range(3):
-                rect = pygame.Rect(j * 100, i * 100, 100, 100)
+                rect = pygame.Rect(j * 300, i * 300, 300, 300)
                 pygame.draw.rect(window, GRAY, rect, 2)
                 if node.puzzle.state[i][j] is not None:
                     text = FONT.render(str(node.puzzle.state[i][j]), True, BLACK)
